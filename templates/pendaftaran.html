@@ -13,39 +13,63 @@
   <div class="container">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+Tambah Pasien</button>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">User Baru</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="#" method="post">
-            <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Username:</label>
-                <input type="text" class="form-control" name="username" id="recipient-name">
+          <form class="row g-3 needs-validation" action="{{url_for('tambahdaftar')}}" id="Daftar" method="POST">
+            <div class="col-md-4">
+              <label for="validationCustom01" class="form-label">Nama</label>
+              <input type="text" class="form-control" id="validationCustom01" name="nama" required>
             </div>
-            <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Password:</label>
-                <input type="password" class="form-control" name="password" id="recipient-name">
+            <div class="col-md-4">
+              <label for="validationCustom02" class="form-label">Tempat</label>
+              <input type="text" class="form-control" id="validationCustom02" name="tl" required>
             </div>
-            <div class="mb-3">
-                <label for="validationCustom04" class="form-label">Level</label>
-                <select class="form-select" id="validationCustom04" name="level" required>
-                  <option selected disabled value="">Pilih...</option>
-                  <option value="Admin">Admin</option>
-                  <option value="Dokter">Dokter</option>
-                  <option value="Administrasi">Administrasi</option>
-                </select>
+            <div class="col-md-4">
+              <label for="validationCustomUsername" class="form-label">Tanggal Lahir</label>
+              <div class="input-group has-validation">
+                <span class="input-group-text" id="inputGroupPrepend">@</span>
+                <input type="date" class="form-control" id="validationCustomUsername" name="tg_lahir" aria-describedby="inputGroupPrepend" required>
               </div>
+            </div>
+            <div class="col-md-4">
+              <label for="validationCustom04" class="form-label">Jenis Kelamin</label>
+              <select class="form-select" id="validationCustom04" name="jk" required>
+                <option selected disabled value="">Pilih...</option>
+                <option value="Laki-laki">Laki-laki</option>
+                <option value="Perempuan">Perempuan</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="validationCustom04" class="form-label">Status Pernikahan</label>
+              <select class="form-select" id="validationCustom04" name="status" required>
+                <option selected disabled value="">Pilih...</option>
+                <option value="Belum Menikah">Belum Menikah</option>
+                <option value="Sudah Menikah">Sudah Menikah</option>
+                <option value="Bercerai">Bercerai</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="validationCustom05" class="form-label">Profesi</label>
+              <input type="text" class="form-control" id="validationCustom05" name="profesi" required>
+            </div>
+            <div class="mb-3">
+              <label for="message-text" class="col-form-label">Alamat:</label>
+              <textarea class="form-control" name="alamat" style="height: 180px;" id="message-text"></textarea>
+            </div>
+            <input type="hidden" name="keterangan" value="Diproses">
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-            <button type="submit" class="btn btn-primary">Input</button>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+              <button type="submit" class="btn btn-primary">Input</button>
+            </div>
+              </form>
         </div>
-            </form>
-        </div>
-    </div>
+       </div>
     </div>
     <br /><br />
     <div class="card">
@@ -56,7 +80,7 @@
             <tr>
               <th scope="col">No.</th>
               <th scope="col">Nama Pasien</th>
-              <th scope="col">Tempat</th>
+              <th scope="col">Tempat Lahir</th>
               <th scope="col">Tanggal Lahir</th>
               <th scope="col">Status</th>
               <th scope="col">Profesi</th>
@@ -68,41 +92,69 @@
             {% for dt in data %}
             <tr>
               <th scope="row">{{loop.index}}</th>
-              <td>{{dt.username}}</td>
-              <td>{{dt.level}}</td>
+              <td>{{dt.nama}}</td>
+              <td>{{dt.tl}}</td>
+              <td>{{dt.tg_lahir}}</td>
+              <td>{{dt.status}}</td>
+              <td>{{dt.profesi}}</td>
+              <td>{{dt.alamat}}</td>
               <td><button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1{{dt.id}}" data-bs-whatever="@mdo">Edit</button>
                 <div class="modal fade" id="exampleModal1{{dt.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
+                    <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel1">Edit User</h5>
+                                <h5 class="modal-title" id="exampleModalLabel1">Edit Pasien</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="/edituser/{{dt.id}}" method="post">
-                                <div class="mb-3">
-                                    <label for="recipient-name" class="col-form-label">Username:</label>
-                                    <input type="text" class="form-control" value="{{dt.username}}" name="username" id="recipient-name">
+                              <form class="row g-3 needs-validation" action="/editdaftar/{{dt.id}}" id="Daftar" method="POST">
+                                <div class="col-md-4">
+                                  <label for="validationCustom01" class="form-label">Nama</label>
+                                  <input type="text" class="form-control" value="{{dt.nama}}" id="validationCustom01" name="nama" required>
+                                </div>
+                                <div class="col-md-4">
+                                  <label for="validationCustom02" class="form-label">Tempat</label>
+                                  <input type="text" class="form-control" value="{{dt.tl}}" id="validationCustom02" name="tl" required>
+                                </div>
+                                <div class="col-md-4">
+                                  <label for="validationCustomUsername" class="form-label">Tanggal Lahir</label>
+                                  <div class="input-group has-validation">
+                                    <span class="input-group-text" id="inputGroupPrepend">@</span>
+                                    <input type="date" class="form-control" id="validationCustomUsername" value="{{dt.tg_lahir}}" name="tg_lahir" aria-describedby="inputGroupPrepend" required>
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <label for="validationCustom04" class="form-label">Jenis Kelamin</label>
+                                  <select class="form-select" id="validationCustom04" name="jk" required>
+                                    <option selected disabled value="">{{dt.jk}}</option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                  </select>
+                                </div>
+                                <div class="col-md-4">
+                                  <label for="validationCustom04" class="form-label">Status Pernikahan</label>
+                                  <select class="form-select" id="validationCustom04" name="status" required>
+                                    <option selected disabled value="">{{dt.status}}</option>
+                                    <option value="Belum Menikah">Belum Menikah</option>
+                                    <option value="Sudah Menikah">Sudah Menikah</option>
+                                    <option value="Bercerai">Bercerai</option>
+                                  </select>
+                                </div>
+                                <div class="col-md-4">
+                                  <label for="validationCustom05" class="form-label">Profesi</label>
+                                  <input type="text" class="form-control" id="validationCustom05" value="{{dt.profesi}}" name="profesi" required>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="recipient-name" class="col-form-label">Password:</label>
-                                    <input type="password" class="form-control" name="password" id="recipient-name">
+                                  <label for="message-text" class="col-form-label">Alamat:</label>
+                                  <textarea class="form-control" name="alamat" style="height: 180px;" id="message-text">{{dt.alamat}}</textarea>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="validationCustom04" class="form-label">Level</label>
-                                    <select class="form-select" id="validationCustom04" name="level" required>
-                                    <option selected disabled value="">Pilih...</option>
-                                    <option value="Admin">Admin</option>
-                                    <option value="Dokter">Dokter</option>
-                                    <option value="Administrasi">Administrasi</option>
-                                    </select>
-                                </div>
+                                <input type="hidden" name="keterangan" value="Diproses">
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                <button type="submit" class="btn btn-primary">Input</button>
-                            </div>
-                                </form>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                  <button type="submit" class="btn btn-primary">Input</button>
+                                </div>
+                                  </form>
                             </div>
                         </div>
                     </div>
@@ -119,7 +171,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <a href="/hapususer/{{dt.id}}" class="btn btn-danger">Ya,Hapus</a>
+                                    <a href="/hapusdaftar/{{dt.id}}" class="btn btn-danger">Ya,Hapus</a>
                                 </div>
                                 </div>
                             </div>
@@ -132,5 +184,28 @@
       </div>
     </div>
   </div>
+  {% block tail %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelector("#Daftar").onsubmit = async (e) => {
+        e.preventDefault();
+        const req = new XMLHttpRequest();
+        req.onload = () => {
+          const data = JSON.parse(req.responseText);
+          if(data.success) {
+            alert("Data berhasil ditambahkan!");
+            location.reload();
+          }else{
+            alert("Ada trouble");
+          }
+        }
+        const form = document.querySelector("#Daftar");
+        const datanya = new FormData(form);
+        await req.open("POST", "/tambahdaftar", true);
+        req.send(datanya);
+      }
+    });
+  </script>
+{% endblock %}
   {% endblock %}
 </main>

@@ -46,7 +46,6 @@ class Dokter(db.Model):
     jadwal = db.Column(db.Text, nullable=False)
 
     def __init__(self,nama,jadwal):
-        super().__init__()
         self.nama = nama
         self.jadwal = jadwal
 
@@ -211,6 +210,22 @@ def hapususer(id):
 def pendaftaran():
     data = Pendaftaran.query.all()
     return render_template('pendaftaran.html', data=data)
+
+@app.route('/tambahdaftar', methods=['GET','POST'])
+@login_dulu
+def tambahdaftar():
+    if request.method == "POST":
+        nama = request.form['nama']
+        tl = request.form['tl']
+        tg_lahir = request.form['tg_lahir']
+        jk = request.form['jk']
+        status = request.form['status']
+        profesi = request.form['profesi']
+        alamat = request.form['alamat']
+        keterangan = request.form['keterangan']
+        db.session.add(Pendaftaran(nama,tl,tg_lahir,jk,status,profesi,alamat,keterangan))
+        db.session.commit()
+        return jsonify({'success':True})
 
 @app.route('/apotik')
 @login_dulu
