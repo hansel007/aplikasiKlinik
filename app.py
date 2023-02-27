@@ -73,7 +73,6 @@ class Obat(db.Model):
     suplier_id = db.Column(db.Integer, db.ForeignKey('suplier.id'), nullable=False)
 
     def __init__(self,namaObat,jenisObat,harga_beli,harga_jual,suplier_id):
-        super().__init__()
         self.namaObat = namaObat
         self.jenisObat = jenisObat
         self.harga_beli = harga_beli
@@ -227,11 +226,72 @@ def tambahdaftar():
         db.session.commit()
         return jsonify({'success':True})
 
+@app.route('/editdaftar/<id>', methods=['GET','POST'])
+@login_dulu
+def editdaftar(id):
+    data = Pendaftaran.query.filter_by(id=id).first()
+    if request.method == "POST":
+        data.nama = request.form['nama']
+        data.tl = request.form['tl']
+        data.tg_lahir = request.form['tg_lahir']
+        data.jk = request.form['jk']
+        data.status = request.form['status']
+        data.profesi = request.form['profesi']
+        data.alamat = request.form['alamat']
+        data.keterangan = request.form['keterangan']
+        db.session.add(data)
+        db.session.commit()
+        return redirect(request.referrer)
+
+@app.route('/hapusDaftar/<id>', methods = ['GET','POST'])
+@login_dulu
+def hapusDaftar(id):
+    data = Pendaftaran.query.filter_by(id=id).first()
+    db.session.delete(data)
+    db.session.commit()
+    return redirect(request.referrer)
+
 @app.route('/apotik')
 @login_dulu
 def apotik():
     data = Obat.query.all()
-    return render_template('apotik.html', data=data)
+    data1 = Suplier.query.all()
+    return render_template('apotik.html', data=data, data1=data1)
+
+@app.route('/tambahobat', methods=['GET','POST'])
+@login_dulu
+def tambahobat():
+    if request.method == "POST":
+        namaObat = request.form['namaObat']
+        jenisObat = request.form['jenisObat']
+        harga_beli = request.form['harga_beli']
+        harga_jual = request.form['harga_jual']
+        suplier_id = request.form['suplier_id']
+        db.session.add(Obat(namaObat,jenisObat,harga_beli,harga_jual,suplier_id))
+        db.session.commit()
+        return jsonify({'success':True})
+
+@app.route('/editobat/<id>', methods=['GET','POST'])
+@login_dulu
+def editobat(id):
+    data = Obat.query.filter_by(id=id).first()
+    if request.method == "POST":
+        data.namaObat = request.form['namaObat']
+        data.jenisObat = request.form['jenisObat']
+        data.harga_beli = request.form['harga_beli']
+        data.harga_jual = request.form['harga_jual']
+        data.suplier_id = request.form['suplier_id']
+        db.session.add(data)
+        db.session.commit()
+        return redirect(request.referrer)
+
+@app.route('/hapusObat/<id>', methods = ['GET','POST'])
+@login_dulu
+def hapusObat(id):
+    data = Obat.query.filter_by(id=id).first()
+    db.session.delete(data)
+    db.session.commit()
+    return redirect(request.referrer)
 
 @app.route('/dokter')
 @login_dulu
@@ -261,9 +321,6 @@ def editdokter(id):
         db.session.add(data)
         db.session.commit()
         return redirect(request.referrer)
-    #     return jsonify({'success':True})
-    # else:
-    #     return redirect(request.referrer)
 
 @app.route('/hapusdokter/<id>', methods = ['GET','POST'])
 @login_dulu
@@ -278,6 +335,37 @@ def hapusdokter(id):
 def suplier():
     data = Suplier.query.all()
     return render_template('suplier.html', data=data)
+
+@app.route('/tambahsuplier', methods=['GET','POST'])
+@login_dulu
+def tambahsuplier():
+    if request.method == "POST":
+        perusahaan = request.form['perusahaan']
+        kontak = request.form['kontak']
+        alamat = request.form['alamat']
+        db.session.add(Suplier(perusahaan,kontak,alamat))
+        db.session.commit()
+        return jsonify({'success':True})
+
+@app.route('/editsuplier/<id>', methods=['GET','POST'])
+@login_dulu
+def editsuplier(id):
+    data = Suplier.query.filter_by(id=id).first()
+    if request.method == "POST":
+        data.perusahaan = request.form['perusahaan']
+        data.kontak = request.form['kontak']
+        data.alamat = request.form['alamat']
+        db.session.add(data)
+        db.session.commit()
+        return redirect(request.referrer)
+
+@app.route('/hapusSuplier/<id>', methods = ['GET','POST'])
+@login_dulu
+def hapusSuplier(id):
+    data = Suplier.query.filter_by(id=id).first()
+    db.session.delete(data)
+    db.session.commit()
+    return redirect(request.referrer)
 
 @app.route('/logout')
 @login_dulu

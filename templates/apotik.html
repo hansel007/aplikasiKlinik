@@ -11,33 +11,46 @@
     </div>
   </div>
   <div class="container">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+Tambah User</button>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+Tambah Obat</button>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">User Baru</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Obat Baru</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="#" method="post">
+            <form action="{{url_for('tambahobat')}}" id="idObat" method="post">
             <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Username:</label>
-                <input type="text" class="form-control" name="username" id="recipient-name">
+                <label for="recipient-name" class="col-form-label">Nama Obat:</label>
+                <input type="text" class="form-control" name="namaObat" id="recipient-name">
             </div>
             <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Password:</label>
-                <input type="password" class="form-control" name="password" id="recipient-name">
+              <label for="validationCustom04" class="form-label">Jenis Obat</label>
+              <select class="form-select" id="validationCustom04" name="jenisObat" required>
+                <option selected disabled value="">Pilih...</option>
+                <option value="Kapsul">Kapsul</option>
+                <option value="Tablet">Tablet</option>
+                <option value="Sirup">Sirup</option>
+              </select>
             </div>
             <div class="mb-3">
-                <label for="validationCustom04" class="form-label">Level</label>
-                <select class="form-select" id="validationCustom04" name="level" required>
-                  <option selected disabled value="">Pilih...</option>
-                  <option value="Admin">Admin</option>
-                  <option value="Dokter">Dokter</option>
-                  <option value="Administrasi">Administrasi</option>
-                </select>
-              </div>
+                <label for="recipient-name" class="col-form-label">Harga Beli:</label>
+                <input type="number" class="form-control" name="harga_beli" id="recipient-name">
+            </div>
+            <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">Harga Jual:</label>
+                <input type="number" class="form-control" name="harga_jual" id="recipient-name">
+            </div>
+            <div class="mb-3">
+              <label for="validationCustom04" class="form-label">Suplier</label>
+              <select class="form-select" id="validationCustom04" name="suplier_id" required>
+                <option selected disabled value="">Pilih...</option>
+                {% for d1 in data1 %}
+                <option value="{{d1.id}}">{{d1.perusahaan}}</option>
+                {% endfor %}
+              </select>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -51,7 +64,7 @@
     <div class="card">
       <div class="card-header">Table Apotik</div>
       <div class="card-body">
-        <table class="table table-bordered table-sm">
+        <table class="table table-bordered table-sm" id="myTable">
           <thead class="table table-dark">
             <tr>
               <th scope="col">No.</th>
@@ -67,8 +80,11 @@
             {% for dt in data %}
             <tr>
               <th scope="row">{{loop.index}}</th>
-              <td>{{dt.username}}</td>
-              <td>{{dt.level}}</td>
+              <td>{{dt.namaObat}}</td>
+              <td>{{dt.jenisObat}}</td>
+              <td>{{dt.harga_beli}}</td>
+              <td>{{dt.harga_jual}}</td>
+              <td>{{dt.suplier.perusahaan}}</td>
               <td><button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1{{dt.id}}" data-bs-whatever="@mdo">Edit</button>
                 <div class="modal fade" id="exampleModal1{{dt.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -78,24 +94,38 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="/edituser/{{dt.id}}" method="post">
-                                <div class="mb-3">
-                                    <label for="recipient-name" class="col-form-label">Username:</label>
-                                    <input type="text" class="form-control" value="{{dt.username}}" name="username" id="recipient-name">
+                                <form action="/editobat/{{dt.id}}" method="post">
+                                  <div class="mb-3">
+                                    <label for="recipient-name" class="col-form-label">Nama Obat:</label>
+                                    <input type="text" class="form-control" name="namaObat" value="{{dt.namaObat}}" id="recipient-name">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="recipient-name" class="col-form-label">Password:</label>
-                                    <input type="password" class="form-control" name="password" id="recipient-name">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="validationCustom04" class="form-label">Level</label>
-                                    <select class="form-select" id="validationCustom04" name="level" required>
+                                  <label for="validationCustom04" class="form-label">Jenis Obat</label>
+                                  <select class="form-select" id="validationCustom04" name="jenisObat" required>
                                     <option selected disabled value="">Pilih...</option>
-                                    <option value="Admin">Admin</option>
-                                    <option value="Dokter">Dokter</option>
-                                    <option value="Administrasi">Administrasi</option>
-                                    </select>
+                                    <option value="Kapsul">Kapsul</option>
+                                    <option value="Tablet">Tablet</option>
+                                    <option value="Sirup">Sirup</option>
+                                  </select>
                                 </div>
+                                <div class="mb-3">
+                                    <label for="recipient-name" class="col-form-label">Harga Beli:</label>
+                                    <input type="number" class="form-control" name="harga_beli" value="{{dt.harga_beli}}" id="recipient-name">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="recipient-name" class="col-form-label">Harga Jual:</label>
+                                    <input type="number" class="form-control" name="harga_jual" value="{{dt.harga_jual}}" id="recipient-name">
+                                </div>
+                                <div class="mb-3">
+                                  <label for="validationCustom04" class="form-label">Suplier</label>
+                                  <select class="form-select" id="validationCustom04" name="suplier_id" required>
+                                    <option selected disabled value="">Pilih...</option>
+                                    {% for d1 in data1 %}
+                                    <option value="{{d1.id}}">{{d1.perusahaan}}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                                <input type="hidden" id="{{dt.id}}">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -118,7 +148,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <a href="/hapususer/{{dt.id}}" class="btn btn-danger">Ya,Hapus</a>
+                                    <a href="/hapusObat/{{dt.id}}" class="btn btn-danger">Ya,Hapus</a>
                                 </div>
                                 </div>
                             </div>
@@ -131,5 +161,28 @@
       </div>
     </div>
   </div>
-  {% endblock %}
+{% block tail %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelector("#idObat").onsubmit = async (e) => {
+        e.preventDefault();
+        const req = new XMLHttpRequest();
+        req.onload = () => {
+          const data = JSON.parse(req.responseText);
+          if(data.success) {
+            alert("Data berhasil ditambahkan!");
+            location.reload();
+          }else{
+            alert("Ada trouble");
+          }
+        }
+        const form = document.querySelector("#idObat");
+        const datanya = new FormData(form);
+        await req.open("POST", "/tambahobat", true);
+        req.send(datanya);
+      }
+    });
+  </script>
+{% endblock %}
+{% endblock %}
 </main>

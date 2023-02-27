@@ -75,7 +75,7 @@
     <div class="card">
       <div class="card-header">Table Pasien</div>
       <div class="card-body">
-        <table class="table table-bordered table-sm">
+        <table class="table table-bordered table-sm" id="myTable">
           <thead class="table table-dark">
             <tr>
               <th scope="col">No.</th>
@@ -126,7 +126,7 @@
                                 <div class="col-md-4">
                                   <label for="validationCustom04" class="form-label">Jenis Kelamin</label>
                                   <select class="form-select" id="validationCustom04" name="jk" required>
-                                    <option selected disabled value="">{{dt.jk}}</option>
+                                    <option selected disabled value=""></option>
                                     <option value="Laki-laki">Laki-laki</option>
                                     <option value="Perempuan">Perempuan</option>
                                   </select>
@@ -134,7 +134,7 @@
                                 <div class="col-md-4">
                                   <label for="validationCustom04" class="form-label">Status Pernikahan</label>
                                   <select class="form-select" id="validationCustom04" name="status" required>
-                                    <option selected disabled value="">{{dt.status}}</option>
+                                    <option selected disabled value=""></option>
                                     <option value="Belum Menikah">Belum Menikah</option>
                                     <option value="Sudah Menikah">Sudah Menikah</option>
                                     <option value="Bercerai">Bercerai</option>

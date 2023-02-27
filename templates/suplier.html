@@ -11,33 +11,28 @@
     </div>
   </div>
   <div class="container">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+Tambah User</button>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+Tambah Suplier</button>
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">User Baru</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Suplier Baru</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="{{url_for('tambahuser')}}" method="post">
+            <form action="{{url_for('tambahsuplier')}}" id="Suplier" method="post">
             <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Username:</label>
-                <input type="text" class="form-control" name="username" id="recipient-name">
+                <label for="recipient-name" class="col-form-label">Perusahaan:</label>
+                <input type="text" class="form-control" name="perusahaan" id="recipient-name">
             </div>
             <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Password:</label>
-                <input type="password" class="form-control" name="password" id="recipient-name">
+                <label for="recipient-name" class="col-form-label">Kontak:</label>
+                <input type="text" class="form-control" name="kontak" id="recipient-name">
             </div>
             <div class="mb-3">
-                <label for="validationCustom04" class="form-label">Level</label>
-                <select class="form-select" id="validationCustom04" name="level" required>
-                  <option selected disabled value="">Pilih...</option>
-                  <option value="Admin">Admin</option>
-                  <option value="Dokter">Dokter</option>
-                  <option value="Administrasi">Administrasi</option>
-                </select>
-              </div>
+              <label for="message-text" class="col-form-label">Alamat:</label>
+              <textarea class="form-control" name="alamat" style="height: 180px;" id="message-text"></textarea>
+            </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -51,7 +46,7 @@
     <div class="card">
       <div class="card-header">Table Suplier</div>
       <div class="card-body">
-        <table class="table table-bordered table-sm">
+        <table class="table table-bordered table-sm" id="myTable">
           <thead class="table table-dark">
             <tr>
               <th scope="col">No.</th>
@@ -65,35 +60,32 @@
             {% for dt in data %}
             <tr>
               <th scope="row">{{loop.index}}</th>
-              <td>{{dt.username}}</td>
-              <td>{{dt.level}}</td>
+              <td>{{dt.perusahaan}}</td>
+              <td>{{dt.kontak}}</td>
+              <td>{{dt.alamat}}</td>
               <td><button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1{{dt.id}}" data-bs-whatever="@mdo">Edit</button>
                 <div class="modal fade" id="exampleModal1{{dt.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                             <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel1">Edit User</h5>
+                                <h5 class="modal-title" id="exampleModalLabel1">Edit Suplier</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="/edituser/{{dt.id}}" method="post">
-                                <div class="mb-3">
-                                    <label for="recipient-name" class="col-form-label">Username:</label>
-                                    <input type="text" class="form-control" value="{{dt.username}}" name="username" id="recipient-name">
+                                <form action="/editsuplier/{{dt.id}}" method="post">
+                                  <div class="mb-3">
+                                    <label for="recipient-name" class="col-form-label">Perusahaan:</label>
+                                    <input type="text" class="form-control" name="perusahaan" value="{{dt.perusahaan}}" id="recipient-name">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="recipient-name" class="col-form-label">Password:</label>
-                                    <input type="password" class="form-control" name="password" id="recipient-name">
+                                    <label for="recipient-name" class="col-form-label">Kontak:</label>
+                                    <input type="text" class="form-control" name="kontak" value="{{dt.kontak}}" id="recipient-name">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="validationCustom04" class="form-label">Level</label>
-                                    <select class="form-select" id="validationCustom04" name="level" required>
-                                    <option selected disabled value="">Pilih...</option>
-                                    <option value="Admin">Admin</option>
-                                    <option value="Dokter">Dokter</option>
-                                    <option value="Administrasi">Administrasi</option>
-                                    </select>
+                                  <label for="message-text" class="col-form-label">Alamat:</label>
+                                  <textarea class="form-control" name="alamat" style="height: 180px;" id="message-text">{{dt.alamat}}</textarea>
                                 </div>
+                                <input type="hidden" id="{{dt.id}}">
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -116,7 +108,7 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <a href="/hapususer/{{dt.id}}" class="btn btn-danger">Ya,Hapus</a>
+                                    <a href="/hapusSuplier/{{dt.id}}" class="btn btn-danger">Ya,Hapus</a>
                                 </div>
                                 </div>
                             </div>
@@ -129,5 +121,28 @@
       </div>
     </div>
   </div>
-  {% endblock %}
+{% block tail %}
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelector("#Suplier").onsubmit = async (e) => {
+        e.preventDefault();
+        const req = new XMLHttpRequest();
+        req.onload = () => {
+          const data = JSON.parse(req.responseText);
+          if(data.success) {
+            alert("Data berhasil ditambahkan!");
+            location.reload();
+          }else{
+            alert("Ada trouble");
+          }
+        }
+        const form = document.querySelector("#Suplier");
+        const datanya = new FormData(form);
+        await req.open("POST", "/tambahsuplier", true);
+        req.send(datanya);
+      }
+    });
+  </script>
+{% endblock %}
+{% endblock %}
 </main>
