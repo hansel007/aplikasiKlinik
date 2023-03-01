@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField
 from wtforms.validators import InputRequired
 from flask_bootstrap import Bootstrap
 from functools import wraps
-from sqlalchemy.sql import func
+from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.app_context().push()
@@ -16,6 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root@localhost/dbklinik'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 bootstrap = Bootstrap(app)
 
@@ -58,7 +60,6 @@ class Suplier(db.Model):
     supliernya = db.relationship('Obat', backref=db.backref('suplier', lazy=True))
 
     def __init__(self,perusahaan,kontak,alamat):
-        super().__init__()
         self.perusahaan = perusahaan
         self.kontak = kontak
         self.alamat = alamat
@@ -70,13 +71,15 @@ class Obat(db.Model):
     jenisObat = db.Column(db.String(150), nullable=False)
     harga_beli = db.Column(db.Integer, nullable=False)
     harga_jual = db.Column(db.Integer, nullable=False)
+    kondisi = db.Column(db.String(80), nullable=False)
     suplier_id = db.Column(db.Integer, db.ForeignKey('suplier.id'), nullable=False)
 
-    def __init__(self,namaObat,jenisObat,harga_beli,harga_jual,suplier_id):
+    def __init__(self,namaObat,jenisObat,harga_beli,harga_jual,kondisi,suplier_id):
         self.namaObat = namaObat
         self.jenisObat = jenisObat
         self.harga_beli = harga_beli
         self.harga_jual = harga_jual
+        self.kondisi = kondisi
         self.suplier_id = suplier_id
 
 class Pendaftaran(db.Model):
@@ -93,7 +96,6 @@ class Pendaftaran(db.Model):
     pendaftarannya = db.relationship('Pasien', backref=db.backref('pendaftaran', lazy=True))
 
     def __init__(self,nama,tl,tg_lahir,jk,status,profesi,alamat,keterangan):
-        super().__init__()
         self.nama = nama
         self.tl = tl
         self.tg_lahir = tg_lahir
@@ -114,7 +116,6 @@ class Pasien(db.Model):
     tanggal = db.Column(db.String(100), nullable=False)
 
     def __init__(self,nama,keluhan,diagnosa,resep,user_id,pendaftaran_id,tanggal):
-        super().__init__()
         self.nama = nama
         self.keluhan = keluhan
         self.diagnosa = diagnosa
@@ -160,7 +161,12 @@ def login():
 @app.route('/dashboard')
 @login_dulu
 def dashboard():
-    return render_template('dashboard.html')
+    data1 = db.session.query(Dokter).count()
+    data2 = db.session.query(Pendaftaran).count()
+    data3 = db.session.query(User).count()
+    data4 = db.session.query(func.sum(Obat.harga_jual)).filter(Obat.kondisi == "Rusak").scalar()
+    data5 = db.session.query(func.sum(Obat.harga_jual)).filter(Obat.kondisi == "Baik").scalar()
+    return render_template('dashboard.html', data1=data1, data2=data2, data3=data3, data4=data4, data5=data5)
 
 @app.route('/kelola_user')
 @login_dulu
@@ -267,7 +273,8 @@ def tambahobat():
         harga_beli = request.form['harga_beli']
         harga_jual = request.form['harga_jual']
         suplier_id = request.form['suplier_id']
-        db.session.add(Obat(namaObat,jenisObat,harga_beli,harga_jual,suplier_id))
+        kondisi = request.form['kondisi']
+        db.session.add(Obat(namaObat,jenisObat,harga_beli,harga_jual,kondisi,suplier_id))
         db.session.commit()
         return jsonify({'success':True})
 
@@ -280,6 +287,7 @@ def editobat(id):
         data.jenisObat = request.form['jenisObat']
         data.harga_beli = request.form['harga_beli']
         data.harga_jual = request.form['harga_jual']
+        data.kondisi = request.form['kondisi']
         data.suplier_id = request.form['suplier_id']
         db.session.add(data)
         db.session.commit()
