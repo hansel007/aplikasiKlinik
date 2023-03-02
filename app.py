@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SelectField
@@ -8,6 +8,7 @@ from wtforms.validators import InputRequired
 from flask_bootstrap import Bootstrap
 from functools import wraps
 from flask_migrate import Migrate
+import datetime
 
 app = Flask(__name__)
 app.app_context().push()
@@ -374,6 +375,45 @@ def hapusSuplier(id):
     db.session.delete(data)
     db.session.commit()
     return redirect(request.referrer)
+
+@app.route('/tangani_pasien')
+@login_dulu
+def tangani_pasien():
+    data = Pendaftaran.query.filter_by(keterangan="Diproses").all()
+    return render_template('tangani.html', data=data)
+
+@app.route('/diagnosis/<id>', methods=['GET','POST'])
+@login_dulu
+def diagnosis(id):
+    data = Pendaftaran.query.filter_by(id=id).first()
+    if request.method == "POST":
+        nama = request.form['nama']
+        keluhan = request.form['keluhan']
+        diagnosa = request.form['diagnosa']
+        resep = request.form['resep']
+        user_id = request.form['user_id']
+        pendaftaran_id = request.form['pendaftaran_id']
+        tanggal = datetime.datetime.now().strftime("%d %B %Y Jam %H:%M:%S")
+        data.keterangan = "Selesai"
+        db.session.add(data)
+        db.session.commit()
+        db.session.add(Pasien(nama,keluhan,diagnosa,resep,user_id,pendaftaran_id,tanggal))
+        db.session.commit()
+        return redirect(request.referrer)
+
+@app.route('/pencarian')
+@login_dulu
+def pencarian():
+    return render_template('pencarian.html')
+
+@app.route('/cari_data', methods=['GET','POST'])
+@login_dulu
+def cari_data():
+    if request.method == 'POST':
+        keyword = request.form['q']
+        formt = "%{0}%".format(keyword)
+        datanya = Pasien.query.join(User, Pasien.user_id == User.id).filter(or_(Pasien.tanggal.like(formt))).all()
+        return render_template('pencarian.html', datanya=datanya)
 
 @app.route('/logout')
 @login_dulu
