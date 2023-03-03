@@ -42,8 +42,18 @@
       <br />
       <button class="btn btn-sm btn-success" type="submit">Cari</button>
     </form>
-    <br />
-    <div class="card">
+    {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin: 5px">
+      <strong>{{message}}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %} {% endif %} {% endwith %} {% if pesan %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin: 5px">
+      <strong>{{pesan}}</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+    <div class="card" style="margin: 10px">
       <div class="card-header">Table Pasien</div>
       <div class="card-body">
         <table class="table table-bordered table-sm">
@@ -70,6 +80,9 @@
         </table>
       </div>
     </div>
+    {% if tombol == "tombol" %}
+    <a class="btn btn-danger" href="/cetak_pdf/{{keyword}}" target="new">Cetak Laporan</a>
+    {% endif %}
   </div>
   {% endblock %}
 </main>

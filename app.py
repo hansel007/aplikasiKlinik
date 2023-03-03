@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, current_app, make_response
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, or_
 from flask_bcrypt import Bcrypt
@@ -9,6 +9,7 @@ from flask_bootstrap import Bootstrap
 from functools import wraps
 from flask_migrate import Migrate
 import datetime
+import pdfkit
 
 app = Flask(__name__)
 app.app_context().push()
@@ -413,7 +414,26 @@ def cari_data():
         keyword = request.form['q']
         formt = "%{0}%".format(keyword)
         datanya = Pasien.query.join(User, Pasien.user_id == User.id).filter(or_(Pasien.tanggal.like(formt))).all()
-        return render_template('pencarian.html', datanya=datanya)
+        if datanya:
+            flash("Data berhasil ditemukan!")
+            tombol = "tombol"
+        elif not datanya:
+            pesan = "Data tidak berhasil ditemukan!"
+            return render_template('pencarian.html', datanya=datanya, pesan=pesan)
+        return render_template('pencarian.html', datanya=datanya, tombol=tombol, keyword=keyword)
+
+@app.route('/cetak_pdf/<keyword>', methods=['GET','POST'])
+@login_dulu
+def cetak_pdf(keyword):
+    formt = "%{0}%".format(keyword)
+    datanya = Pasien.query.join(User, Pasien.user_id == User.id).filter(or_(Pasien.tanggal.like(formt))).all()
+    html = render_template("pdf.html", datanya=datanya)
+    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+    pdf = pdfkit.from_string(html, False, configuration=config)
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'aplication/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=laporan.pdf'
+    return response
 
 @app.route('/logout')
 @login_dulu
