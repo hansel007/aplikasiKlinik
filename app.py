@@ -435,6 +435,10 @@ def cetak_pdf(keyword):
     response.headers['Content-Disposition'] = 'inline; filename=laporan.pdf'
     return response
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 @app.route('/logout')
 @login_dulu
 def logout():
@@ -442,4 +446,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
